@@ -353,6 +353,10 @@ Blockly.Toolbox.CategoryMenu.prototype.getHeight = function() {
  * Create the DOM for the category menu.
  */
 Blockly.Toolbox.CategoryMenu.prototype.createDom = function() {
+  this.div = goog.dom.createDom('div', 'scratchCetegoryMenuTitle');
+  this.div.innerHTML = "I want my sprite to..."; //TODO(morant): Title should come from configs.
+  this.parentHtml_.appendChild(this.div);
+  this.height_ = this.div.offsetHeight;
   /*
   <table class="scratchCategoryMenu">
   </table>
@@ -395,7 +399,7 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
           categories[i + columnSeparator]));
     }
   }
-  this.height_ = this.table.offsetHeight;
+  this.height_ = this.height_ + this.table.offsetHeight;
 };
 
 /**
@@ -455,12 +459,8 @@ Blockly.Toolbox.Category.prototype.createDom = function() {
   this.item_ = goog.dom.createDom('td',
       {'class': 'scratchCategoryMenuItem'},
       this.name_);
-  this.bubble_ = goog.dom.createDom('div', {
-    'class': (toolbox.RTL) ? 'scratchCategoryItemBubbleRTL' :
-    'scratchCategoryItemBubbleLTR'});
-  this.bubble_.style.backgroundColor = this.colour_;
-  this.bubble_.style.borderColor = this.secondaryColour_;
-  this.item_.appendChild(this.bubble_);
+  this.item_.style.backgroundColor = this.colour_;
+  this.item_.style.borderColor = this.secondaryColour_;
   this.parentHtml_.appendChild(this.item_);
   Blockly.bindEvent_(this.item_, 'mousedown', toolbox,
     toolbox.setSelectedItemFactory(this));
