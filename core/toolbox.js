@@ -377,9 +377,9 @@ Blockly.Toolbox.CategoryMenu.prototype.createDom = function() {
   if (this.showCategories_) {
     this.div = goog.dom.createDom('div', 'scratchCetegoryMenuTitle');
     this.div.innerHTML = "I want my sprite to..."; //TODO(morant): Title should come from configs.
+    this.parentHtml_.appendChild(this.div);
+    this.height_ = this.div.offsetHeight;
   }
-  this.parentHtml_.appendChild(this.div);
-  this.height_ = this.div.offsetHeight;
   /*
   <table class="scratchCategoryMenu">
   </table>
