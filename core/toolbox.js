@@ -63,6 +63,14 @@ Blockly.Toolbox = function(workspace) {
   this.iconic_ = false;
 
   /**
+   * Whether toolbox categories should be presented.
+   * If false, they will be replaced by a "show more" button.
+   * @type {boolean}
+   * @private
+   */
+  this.showCategories_ = false;
+
+  /**
    * Is RTL vs LTR.
    * @type {boolean}
    */
@@ -319,11 +327,23 @@ Blockly.Toolbox.prototype.setSelectedItem = function(item) {
  * @return {function} A function that can be passed to bindEvent.
  */
 Blockly.Toolbox.prototype.setSelectedItemFactory = function(item) {
-  var selectedItem = item;
-  return function() {
-    this.setSelectedItem(selectedItem);
-    Blockly.Touch.clearTouchIdentifier();
-  };
+  if (this.showCategories_) {
+    var selectedItem = item;
+    return function() {
+      this.setSelectedItem(selectedItem);
+      Blockly.Touch.clearTouchIdentifier();
+    };
+  } else {
+    return function() {
+      var nextCategory = this.categoryMenu_.advanceCategory();
+      if (nextCategory) {
+        this.setSelectedItem(nextCategory);
+      } else {
+        console.log("No more categories to show");
+      }
+      Blockly.Touch.clearTouchIdentifier();
+    };
+  }
 };
 
 // Category menu
@@ -340,6 +360,7 @@ Blockly.Toolbox.CategoryMenu = function(parent, parentHtml) {
   this.parentHtml_ = parentHtml;
   this.createDom();
   this.categories_ = [];
+  this.currentCategory_ = 0;
 };
 
 /**
@@ -353,8 +374,10 @@ Blockly.Toolbox.CategoryMenu.prototype.getHeight = function() {
  * Create the DOM for the category menu.
  */
 Blockly.Toolbox.CategoryMenu.prototype.createDom = function() {
-  this.div = goog.dom.createDom('div', 'scratchCetegoryMenuTitle');
-  this.div.innerHTML = "I want my sprite to..."; //TODO(morant): Title should come from configs.
+  if (this.showCategories_) {
+    this.div = goog.dom.createDom('div', 'scratchCetegoryMenuTitle');
+    this.div.innerHTML = "I want my sprite to..."; //TODO(morant): Title should come from configs.
+  }
   this.parentHtml_.appendChild(this.div);
   this.height_ = this.div.offsetHeight;
   /*
@@ -383,23 +406,39 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
     }
     categories.push(child);
   }
-  // Create categories one row at a time.
-  // Note that this involves skipping around by `columnSeparator` in the DOM tree.
 
-  // TODO(morant): Changed it so it will build every row in the right order, find a better solution.
-  var columnSeparator = Math.ceil(categories.length / 2);
-  for (var i = 0; i < categories.length; i += 2) {
-    child = categories[i];
-    var row = goog.dom.createDom('tr', 'scratchCategoryMenuRow');
-    this.table.appendChild(row);
-    if (child) {
-      this.categories_.push(new Blockly.Toolbox.Category(this, row,
-          child));
+  // TODO(morant): Find a better way to handle this case, and avoid code
+  // duplication - copied for a few lines below. 
+  if(4 < 6) {
+    for (var i = 0; i < categories.length; i ++) {
+      child = categories[i];
+      var row = goog.dom.createDom('tr', 'scratchCategoryMenuRow');
+      this.table.appendChild(row);
+      if (child) {
+        var newCategory = new Blockly.Toolbox.Category(this, row, child);
+        this.categories_.push(newCategory);
+        if (i !== 0) {
+          newCategory.item_.style.display = "none"; //TODO(morant): Better way to hide other buttons?
+        }
+      }
     }
-    if (i+1 < categories.length && categories[i + 1]) {
-      console.log("Adding second to row")
-      this.categories_.push(new Blockly.Toolbox.Category(this, row,
-          categories[i + 1]));
+  } else {
+    // Create categories one row at a time.
+    // Note that this involves skipping around by `columnSeparator` in the DOM tree.
+
+    // TODO(morant): Changed it so it will build every row in the right order, find a better solution.
+    for (var i = 0; i < categories.length; i += 2) {
+      child = categories[i];
+      var row = goog.dom.createDom('tr', 'scratchCategoryMenuRow');
+      this.table.appendChild(row);
+      if (child) {
+        this.categories_.push(new Blockly.Toolbox.Category(this, row,
+            child));
+      }
+      if (i+1 < categories.length && categories[i + 1]) {
+        this.categories_.push(new Blockly.Toolbox.Category(this, row,
+            categories[i + 1]));
+      }
     }
   }
   this.height_ = this.height_ + this.table.offsetHeight;
@@ -418,6 +457,16 @@ Blockly.Toolbox.CategoryMenu.prototype.dispose = function() {
   }
 };
 
+Blockly.Toolbox.CategoryMenu.prototype.advanceCategory = function() {
+  var moreCategories = this.currentCategory_ + 1 < this.categories_.length; 
+  if (moreCategories) {
+    this.currentCategory_++;
+    var res = this.categories_[this.currentCategory_];
+    return res;
+  } else {
+    return null;
+  }
+};
 
 // Category
 /**

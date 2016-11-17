@@ -28,7 +28,80 @@ goog.require('Blockly.Blocks');
  * @fileoverview Provide a default toolbox XML.
  */
 
-Blockly.Blocks.defaultToolbox = '<xml id="toolbox-categories" style="display: none">'+
+var firstStepBlocks = 
+  '<block type="event_whenkeypressed">'+
+  '</block>'+
+  '<block type="sound_play">'+
+    '<value name="SOUND_MENU">'+
+      '<shadow type="sound_sounds_option"></shadow>'+
+    '</value>'+
+  '</block>'+
+  '<block type="control_wait">'+
+    '<value name="DURATION">'+
+      '<shadow type="math_positive_number">'+
+        '<field name="NUM">1</field>'+
+      '</shadow>'+
+    '</value>'+
+  '</block>';
+var secondStepBlocks = 
+  '<block type="motion_movesteps">'+
+    '<value name="STEPS">'+
+      '<shadow type="math_number">'+
+        '<field name="NUM">10</field>'+
+      '</shadow>'+
+    '</value>'+
+  '</block>'+
+  '<block type="motion_turnright">'+
+    '<value name="DEGREES">'+
+      '<shadow type="math_number">'+
+        '<field name="NUM">90</field>'+
+      '</shadow>'+
+    '</value>'+
+  '</block>'+
+  '<block type="control_repeat">'+
+    '<value name="TIMES">'+
+      '<shadow type="math_whole_number">'+
+        '<field name="NUM">10</field>'+
+      '</shadow>'+
+    '</value>'+
+  '</block>';
+var thirdStepBlocks = 
+  '<block type="looks_sayforsecs">'+
+    '<value name="MESSAGE">'+
+      '<shadow type="text">'+
+        '<field name="TEXT">Hello!</field>'+
+      '</shadow>'+
+    '</value>'+
+    '<value name="SECS">'+
+      '<shadow type="math_number">'+
+        '<field name="NUM">2</field>'+
+      '</shadow>'+
+    '</value>'+
+  '</block>'+
+  '<block type="looks_changesizeby">'+
+   '<value name="CHANGE">'+
+    '<shadow type="math_number">'+
+         '<field name="NUM">10</field>'+
+       '</shadow>'+
+     '</value>'+
+   '</block>';
+
+var defaultToolboxNoCategories = '<xml id="toolbox-categories" style="display: none">'+
+  '<category name="More Blocks" colour="#4C97FF" secondaryColour="#3373CC">'+
+    firstStepBlocks +
+  '</category>'+
+  '<category name="Second" colour="#4C97FF" secondaryColour="#3373CC">'+
+    firstStepBlocks +
+    secondStepBlocks +
+  '</category>'+
+  '<category name="Third" colour="#4C97FF" secondaryColour="#3373CC">'+
+    firstStepBlocks +
+    secondStepBlocks +
+    thirdStepBlocks +
+  '</category>'+
+  '</xml>';
+
+var defaultToolboxWithCategories = '<xml id="toolbox-categories" style="display: none">'+
   '<category name="Move" colour="#4C97FF" secondaryColour="#3373CC">'+
     '<block type="motion_turnright">'+
       '<value name="DEGREES">'+
@@ -176,3 +249,5 @@ Blockly.Blocks.defaultToolbox = '<xml id="toolbox-categories" style="display: no
     '</block>'+
   '</category>'+
   '</xml>';
+
+  Blockly.Blocks.defaultToolbox = defaultToolboxNoCategories;
