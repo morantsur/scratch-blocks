@@ -385,8 +385,10 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
   }
   // Create categories one row at a time.
   // Note that this involves skipping around by `columnSeparator` in the DOM tree.
+
+  // TODO(morant): Changed it so it will build every row in the right order, find a better solution.
   var columnSeparator = Math.ceil(categories.length / 2);
-  for (var i = 0; i < columnSeparator; i += 1) {
+  for (var i = 0; i < categories.length; i += 2) {
     child = categories[i];
     var row = goog.dom.createDom('tr', 'scratchCategoryMenuRow');
     this.table.appendChild(row);
@@ -394,9 +396,10 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
       this.categories_.push(new Blockly.Toolbox.Category(this, row,
           child));
     }
-    if (categories[i + columnSeparator]) {
+    if (i+1 < categories.length && categories[i + 1]) {
+      console.log("Adding second to row")
       this.categories_.push(new Blockly.Toolbox.Category(this, row,
-          categories[i + columnSeparator]));
+          categories[i + 1]));
     }
   }
   this.height_ = this.height_ + this.table.offsetHeight;

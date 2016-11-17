@@ -78,6 +78,30 @@ Blockly.Blocks.defaultToolbox = '<xml id="toolbox-categories" style="display: no
     '<block type="event_whenkeypressed">'+
     '</block>'+
   '</category>'+
+  '<category name="change" colour="#9966FF" secondaryColour="#774DCB">'+
+    '<block type="looks_switchcostumeto">'+
+      '<value name="COSTUME">'+
+        '<shadow type="looks_costume"></shadow>'+
+      '</value>'+
+    '</block>'+
+    '<block type="looks_nextcostume"></block>'+
+    '<block type="control_wait">'+
+      '<value name="DURATION">'+
+        '<shadow type="math_positive_number">'+
+          '<field name="NUM">1</field>'+
+        '</shadow>'+
+      '</value>'+
+    '</block>'+
+    '<block type="control_repeat">'+
+      '<value name="TIMES">'+
+        '<shadow type="math_whole_number">'+
+          '<field name="NUM">10</field>'+
+        '</shadow>'+
+      '</value>'+
+    '</block>'+
+    '<block type="event_whenkeypressed">'+
+    '</block>'+
+  '</category>'+
   '<category name="talk" colour="#9966FF" secondaryColour="#774DCB">'+
     '<block type="looks_say">'+
       '<value name="MESSAGE">'+
@@ -106,30 +130,6 @@ Blockly.Blocks.defaultToolbox = '<xml id="toolbox-categories" style="display: no
       '</value>'+
     '</block>'+
 
-    '<block type="control_wait">'+
-      '<value name="DURATION">'+
-        '<shadow type="math_positive_number">'+
-          '<field name="NUM">1</field>'+
-        '</shadow>'+
-      '</value>'+
-    '</block>'+
-    '<block type="control_repeat">'+
-      '<value name="TIMES">'+
-        '<shadow type="math_whole_number">'+
-          '<field name="NUM">10</field>'+
-        '</shadow>'+
-      '</value>'+
-    '</block>'+
-    '<block type="event_whenkeypressed">'+
-    '</block>'+
-  '</category>'+
-  '<category name="change" colour="#9966FF" secondaryColour="#774DCB">'+
-    '<block type="looks_switchcostumeto">'+
-      '<value name="COSTUME">'+
-        '<shadow type="looks_costume"></shadow>'+
-      '</value>'+
-    '</block>'+
-    '<block type="looks_nextcostume"></block>'+
     '<block type="control_wait">'+
       '<value name="DURATION">'+
         '<shadow type="math_positive_number">'+
