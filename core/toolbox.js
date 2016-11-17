@@ -315,7 +315,8 @@ Blockly.Toolbox.prototype.setSelectedItem = function(item) {
   }
   this.selectedItem_ = item;
   if (this.selectedItem_ != null) {
-    this.selectedItem_.setSelected(true);
+    // Don't highlight blocks in the no categories case
+    this.selectedItem_.setSelected(this.showCategories_);
     this.flyout_.show(item.getContents());
     this.flyout_.scrollToStart();
   }
@@ -334,8 +335,14 @@ Blockly.Toolbox.prototype.setSelectedItemFactory = function(item) {
       Blockly.Touch.clearTouchIdentifier();
     };
   } else {
+    // The first category acts as a "show more blocks" button, while the others act as a "show less".
+    // at first this.firstCateforyIsSet is undefined, but after setting one category is is set to true, 
+    // so moveVetweenCategories gets a "false" as the param for moving forward. 
+    var advanceCategoriesWhenClicked = (!this.firstCategoryIsSet_);
+    this.firstCategoryIsSet_ = true;
+    
     return function() {
-      var nextCategory = this.categoryMenu_.advanceCategory();
+      var nextCategory = this.categoryMenu_.moveBetweenCategories(advanceCategoriesWhenClicked);
       if (nextCategory) {
         this.setSelectedItem(nextCategory);
       } else {
@@ -407,37 +414,21 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
     categories.push(child);
   }
 
-  // TODO(morant): Find a better way to handle this case, and avoid code
-  // duplication - copied for a few lines below. 
-  if(4 < 6) {
-    for (var i = 0; i < categories.length; i ++) {
-      child = categories[i];
-      var row = goog.dom.createDom('tr', 'scratchCategoryMenuRow');
-      this.table.appendChild(row);
-      if (child) {
+  // TODO(morant): This is a change from the submitted code, which places categories
+  // in a two vertical columns. This builds rows instead. 
+  for (var i = 0; i < categories.length; i += 2) {
+    var row = goog.dom.createDom('tr', 'scratchCategoryMenuRow');
+    this.table.appendChild(row);
+    // Add two categories to every row
+    for (var j = 0; j < 2; j++){
+      if (i+j < categories.length && categories[i+j]) {
+        child = categories[i+j];
         var newCategory = new Blockly.Toolbox.Category(this, row, child);
         this.categories_.push(newCategory);
-        if (i !== 0) {
+        // If we're in the "no categories" case - show only 2 "categories" - "more blocks" and "less blocks".
+        if (!this.parent_.showCategories_ && i+j > 1) { 
           newCategory.item_.style.display = "none"; //TODO(morant): Better way to hide other buttons?
         }
-      }
-    }
-  } else {
-    // Create categories one row at a time.
-    // Note that this involves skipping around by `columnSeparator` in the DOM tree.
-
-    // TODO(morant): Changed it so it will build every row in the right order, find a better solution.
-    for (var i = 0; i < categories.length; i += 2) {
-      child = categories[i];
-      var row = goog.dom.createDom('tr', 'scratchCategoryMenuRow');
-      this.table.appendChild(row);
-      if (child) {
-        this.categories_.push(new Blockly.Toolbox.Category(this, row,
-            child));
-      }
-      if (i+1 < categories.length && categories[i + 1]) {
-        this.categories_.push(new Blockly.Toolbox.Category(this, row,
-            categories[i + 1]));
       }
     }
   }
@@ -457,10 +448,29 @@ Blockly.Toolbox.CategoryMenu.prototype.dispose = function() {
   }
 };
 
+/**
+* return the next/previous category to the one shown currently. 
+* @param shouldAdvance - if true, will advance categories when clickes, otherwise will go back to previous.
+*/
+Blockly.Toolbox.CategoryMenu.prototype.moveBetweenCategories = function(shouldAdvance) { 
+  return shouldAdvance ? this.advanceCategory() : this.goBackCategory();
+};
+
 Blockly.Toolbox.CategoryMenu.prototype.advanceCategory = function() {
   var moreCategories = this.currentCategory_ + 1 < this.categories_.length; 
   if (moreCategories) {
     this.currentCategory_++;
+    var res = this.categories_[this.currentCategory_];
+    return res;
+  } else {
+    return null;
+  }
+};
+
+Blockly.Toolbox.CategoryMenu.prototype.goBackCategory = function() {
+  var backCategories = (this.currentCategory_ - 1 >= 0); 
+  if (backCategories) {
+    this.currentCategory_--;
     var res = this.categories_[this.currentCategory_];
     return res;
   } else {

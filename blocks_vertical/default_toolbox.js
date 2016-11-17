@@ -87,14 +87,14 @@ var thirdStepBlocks =
    '</block>';
 
 var defaultToolboxNoCategories = '<xml id="toolbox-categories" style="display: none">'+
-  '<category name="More Blocks" colour="#4C97FF" secondaryColour="#3373CC">'+
+  '<category name="more Blocks" colour="#4C97FF" secondaryColour="#3373CC">'+
     firstStepBlocks +
   '</category>'+
-  '<category name="Second" colour="#4C97FF" secondaryColour="#3373CC">'+
+  '<category name="less Blocks" colour="#4C97FF" secondaryColour="#3373CC">'+
     firstStepBlocks +
     secondStepBlocks +
   '</category>'+
-  '<category name="Third" colour="#4C97FF" secondaryColour="#3373CC">'+
+  '<category name="third" colour="#4C97FF" secondaryColour="#3373CC">'+
     firstStepBlocks +
     secondStepBlocks +
     thirdStepBlocks +
@@ -102,7 +102,7 @@ var defaultToolboxNoCategories = '<xml id="toolbox-categories" style="display: n
   '</xml>';
 
 var defaultToolboxWithCategories = '<xml id="toolbox-categories" style="display: none">'+
-  '<category name="Move" colour="#4C97FF" secondaryColour="#3373CC">'+
+  '<category name="move" colour="#4C97FF" secondaryColour="#3373CC">'+
     '<block type="motion_turnright">'+
       '<value name="DEGREES">'+
         '<shadow type="math_number">'+
