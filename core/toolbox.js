@@ -70,7 +70,13 @@ Blockly.Toolbox = function(workspace) {
    */
    //TODO(morant): allow the "defualt" box when it's 0.
   this.showScaffoldingCategories_ = workspace.options.showScaffoldingCategories;
-  this.showCategories_ = (this.showScaffoldingCategories_ == 2 or this.showScaffoldingCategories_ == 0); //TODO: Second part is a hack.
+
+  // True if categories will be shown (the only currentcase when it's false is in the show more/show less)
+  this.showCategories_ = (this.showScaffoldingCategories_ == 2 ||
+                          this.showScaffoldingCategories_ == 0);
+  
+  // True if only a subset of the blocks should be shown.
+  this.isMicroworld_ = (this.showScaffoldingCategories_ > 0);
 
   /**
    * Is RTL vs LTR.
@@ -121,6 +127,9 @@ Blockly.Toolbox.prototype.init = function() {
   this.HtmlDiv =
       goog.dom.createDom(goog.dom.TagName.DIV, 'blocklyToolboxDiv');
   this.HtmlDiv.setAttribute('dir', workspace.RTL ? 'RTL' : 'LTR');
+  if (this.isMicroworld_) {
+    this.HtmlDiv.className += ' microworld';
+  }
   svg.parentNode.insertBefore(this.HtmlDiv, svg);
 
   // Clicking on toolbox closes popups.
@@ -338,8 +347,8 @@ Blockly.Toolbox.prototype.setSelectedItemFactory = function(item) {
     };
   } else {
     // The first category acts as a "show more blocks" button, while the others act as a "show less".
-    // at first this.firstCateforyIsSet is undefined, but after setting one category is is set to true, 
-    // so moveVetweenCategories gets a "false" as the param for moving forward. 
+    // at first this.firstCateforyIsSet is undefined, but after setting one category is is set to true,
+    // so moveVetweenCategories gets a "false" as the param for moving forward.
     var advanceCategoriesWhenClicked = (!this.firstCategoryIsSet_);
     this.firstCategoryIsSet_ = true;
 
@@ -383,7 +392,8 @@ Blockly.Toolbox.CategoryMenu.prototype.getHeight = function() {
  * Create the DOM for the category menu.
  */
 Blockly.Toolbox.CategoryMenu.prototype.createDom = function() {
-  if (this.showCategories_) {
+  // Only show in the case of the microworld with categories.
+  if (this.showCategories_ && this.isMicroworld_) {
     this.div = goog.dom.createDom('div', 'scratchCetegoryMenuTitle');
     this.div.innerHTML = "I want my sprite to..."; //TODO(morant): Title should come from configs.
     this.parentHtml_.appendChild(this.div);
@@ -417,7 +427,7 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
   }
 
   // TODO(morant): This is a change from the submitted code, which places categories
-  // in a two vertical columns. This builds rows instead. 
+  // in a two vertical columns. This builds rows instead.
   for (var i = 0; i < categories.length; i += 2) {
     var row = goog.dom.createDom('tr', 'scratchCategoryMenuRow');
     this.table.appendChild(row);
@@ -428,7 +438,7 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
         var newCategory = new Blockly.Toolbox.Category(this, row, child);
         this.categories_.push(newCategory);
         // If we're in the "no categories" case - show only 2 "categories" - "more blocks" and "less blocks".
-        if (!this.parent_.showCategories_ && i+j > 1) { 
+        if (!this.parent_.showCategories_ && i+j > 1) {
           newCategory.item_.style.display = "none"; //TODO(morant): Better way to hide other buttons?
         }
       }
@@ -451,15 +461,15 @@ Blockly.Toolbox.CategoryMenu.prototype.dispose = function() {
 };
 
 /**
-* return the next/previous category to the one shown currently. 
+* return the next/previous category to the one shown currently.
 * @param shouldAdvance - if true, will advance categories when clickes, otherwise will go back to previous.
 */
-Blockly.Toolbox.CategoryMenu.prototype.moveBetweenCategories = function(shouldAdvance) { 
+Blockly.Toolbox.CategoryMenu.prototype.moveBetweenCategories = function(shouldAdvance) {
   return shouldAdvance ? this.advanceCategory() : this.goBackCategory();
 };
 
 Blockly.Toolbox.CategoryMenu.prototype.advanceCategory = function() {
-  var moreCategories = this.currentCategory_ + 1 < this.categories_.length; 
+  var moreCategories = this.currentCategory_ + 1 < this.categories_.length;
   if (moreCategories) {
     this.currentCategory_++;
     var res = this.categories_[this.currentCategory_];
@@ -470,7 +480,7 @@ Blockly.Toolbox.CategoryMenu.prototype.advanceCategory = function() {
 };
 
 Blockly.Toolbox.CategoryMenu.prototype.goBackCategory = function() {
-  var backCategories = (this.currentCategory_ - 1 >= 0); 
+  var backCategories = (this.currentCategory_ - 1 >= 0);
   if (backCategories) {
     this.currentCategory_--;
     var res = this.categories_[this.currentCategory_];
@@ -523,8 +533,17 @@ Blockly.Toolbox.Category.prototype.createDom = function() {
   this.item_ = goog.dom.createDom('td',
       {'class': 'scratchCategoryMenuItem'},
       this.name_);
-  this.item_.style.backgroundColor = this.colour_;
-  this.item_.style.borderColor = this.secondaryColour_;
+  if (this.parent_.parent_.isMicroworld_) {
+    this.item_.style.backgroundColor = this.colour_;
+    this.item_.style.borderColor = this.secondaryColour_;
+  } else {
+    this.bubble_ = goog.dom.createDom('div', {
+      'class': (toolbox.RTL) ? 'scratchCategoryItemBubbleRTL' :
+      'scratchCategoryItemBubbleLTR'});
+    this.bubble_.style.backgroundColor = this.colour_;
+    this.bubble_.style.borderColor = this.secondaryColour_;
+    this.item_.appendChild(this.bubble_);
+  }
   this.parentHtml_.appendChild(this.item_);
   Blockly.bindEvent_(this.item_, 'mousedown', toolbox,
     toolbox.setSelectedItemFactory(this));

@@ -621,6 +621,11 @@ Blockly.Css.CONTENT = [
     'font-family: "Helvetica Neue", Helvetica, sans-serif;',
   '}',
 
+  '.microworld.blocklyToolboxDiv {',
+    'color: $colour_toolbox;',
+    'background-color: $colour_flyout',
+  '}',
+
   '.blocklyTreeRoot {',
     'padding: 4px 0;',
   '}',
@@ -1021,20 +1026,22 @@ Blockly.Css.CONTENT = [
     'fill: blue;',
   '}',
 
-  '.blocklyToolboxDiv {',
-    'background-color: $colour_flyout',
-  '}',
-
   '.scratchCategoryMenu {',
     'width: 250px;',
+    'background: $colour_toolbox;',
     'color: $colour_toolboxText;',
     'font-size: .9em;',
-    'font-weight: bold;',
-    'padding-bottom: 10px;',
     'user-select: none;',
     '-webkit-user-select: none;',
     '-moz-user-select: none;',
     '-ms-user-select: none;',
+  '}',
+
+  '.microworld .scratchCategoryMenu {',
+    'color: $colour_toolbox;',
+    'background: transparent;',
+    'font-weight: bold;',
+    'padding-bottom: 10px;',
   '}',
 
   '.scratchCategoryRow {',
@@ -1045,6 +1052,9 @@ Blockly.Css.CONTENT = [
     'padding: 4px;',
     'width: 50%;',
     'cursor: pointer;',
+  '}',
+
+  '.microworld .scratchCategoryMenuItem {',
     'height: 60px;',
     'text-align: center;',
     'border-radius: 16px;',
@@ -1052,23 +1062,41 @@ Blockly.Css.CONTENT = [
   '}',
 
   '.scratchCategoryMenuItem.categorySelected {',
+    'background: $colour_toolboxSelected;',
+    'border-radius: 16px;',
+  '}',
+
+  '.microworld .scratchCategoryMenuItem.categorySelected {',
+    'background: transparent;',
     'box-shadow: inset 0px 0px 0px 4px #c88330;',
   '}',
 
-  '.scratchCategoryMenuItem:hover {',
-    'color: $colour_toolboxHover !important;',
-  '}',
+  '.scratchCategoryItemBubbleLTR {',
+     'width: 14px;',
+     'height: 14px;',
+     'border: 1px solid;',
+     'border-radius: 8px;',
+     'float: left;',
+     'margin-right: 8px;',
 
-  '.scratchCetegoryMenuTitle {',
-    'color: $colour_toolboxHover;',
+   '.scratchCategoryItemBubbleRTL {',
+     'width: 14px;',
+     'height: 14px;',
+     'border: 1px solid;',
+     'border-radius: 8px;',
+     'float: right;',
+     'margin-left: 8px;',
+
+   '.scratchCategoryMenuItem:hover {',
+     'color: $colour_toolboxHover !important;',
+   '}',
+
+  '.microworld .scratchCetegoryMenuTitle {',
+    'color: $colour_toolbox;',
     'text-align: center;',
     'line-height: 50px;',
     'font-weight: bold;',
     'font-size: 18px;',
-  '}',
-
-  '.blocklyZoom, .blocklyTrash {',
-  '  display: none',
   '}',
   ''
 ];
