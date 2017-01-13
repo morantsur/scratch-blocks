@@ -65,10 +65,12 @@ Blockly.Toolbox = function(workspace) {
   /**
    * Whether toolbox categories should be presented.
    * If false, they will be replaced by a "show more" button.
-   * @type {boolean}
+   * @type {number}
    * @private
    */
-  this.showCategories_ = false;
+   //TODO(morant): allow the "defualt" box when it's 0.
+  this.showScaffoldingCategories_ = workspace.options.showScaffoldingCategories;
+  this.showCategories_ = (this.showScaffoldingCategories_ == 2 or this.showScaffoldingCategories_ == 0); //TODO: Second part is a hack.
 
   /**
    * Is RTL vs LTR.
@@ -340,7 +342,7 @@ Blockly.Toolbox.prototype.setSelectedItemFactory = function(item) {
     // so moveVetweenCategories gets a "false" as the param for moving forward. 
     var advanceCategoriesWhenClicked = (!this.firstCategoryIsSet_);
     this.firstCategoryIsSet_ = true;
-    
+
     return function() {
       var nextCategory = this.categoryMenu_.moveBetweenCategories(advanceCategoriesWhenClicked);
       if (nextCategory) {
