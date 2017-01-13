@@ -28,7 +28,7 @@ goog.require('Blockly.Blocks');
  * @fileoverview Provide a default toolbox XML.
  */
 
-var firstStepBlocks = 
+var firstStepBlocks =
   '<block type="event_whenkeypressed">'+
   '</block>'+
   '<block type="sound_play">'+
@@ -43,7 +43,7 @@ var firstStepBlocks =
       '</shadow>'+
     '</value>'+
   '</block>';
-var secondStepBlocks = 
+var secondStepBlocks =
   '<block type="motion_movesteps">'+
     '<value name="STEPS">'+
       '<shadow type="math_number">'+
@@ -65,7 +65,7 @@ var secondStepBlocks =
       '</shadow>'+
     '</value>'+
   '</block>';
-var thirdStepBlocks = 
+var thirdStepBlocks =
   '<block type="looks_sayforsecs">'+
     '<value name="MESSAGE">'+
       '<shadow type="text">'+
@@ -250,4 +250,4 @@ var defaultToolboxWithCategories = '<xml id="toolbox-categories" style="display:
   '</category>'+
   '</xml>';
 
-  Blockly.Blocks.defaultToolbox = defaultToolboxNoCategories;
+Blockly.Blocks.defaultToolbox = defaultToolboxNoCategories;
