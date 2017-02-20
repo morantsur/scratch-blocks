@@ -637,8 +637,7 @@ Blockly.Css.CONTENT = [
   '}',
 
   '.microworld.blocklyToolboxDiv {',
-    'color: $colour_toolbox;',
-    'background-color: $colour_flyout',
+    'color: $colour_valueReportBackground;',
   '}',
 
   '.blocklyTreeRoot {',
@@ -1053,7 +1052,7 @@ Blockly.Css.CONTENT = [
   '}',
 
   '.microworld .scratchCategoryMenu {',
-    'color: $colour_toolbox;',
+    'color: $colour_valueReportBackground;',
     'background: transparent;',
     'font-weight: bold;',
     'padding-bottom: 10px;',
@@ -1107,7 +1106,7 @@ Blockly.Css.CONTENT = [
    '}',
 
   '.microworld .scratchCetegoryMenuTitle {',
-    'color: $colour_toolbox;',
+    'color: $colour_valueReportBackground;',
     'text-align: center;',
     'line-height: 50px;',
     'font-weight: bold;',
