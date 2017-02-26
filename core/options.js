@@ -26,6 +26,7 @@
 
 goog.provide('Blockly.Options');
 goog.require('Blockly.Colours');
+goog.require('Blockly.Blocks');
 
 
 /**
@@ -253,6 +254,9 @@ Blockly.Options.parseToolboxTree = function(tree) {
       }
     }
     if (typeof tree == 'string') {
+      if (tree === "DEFAULT") {
+        tree = Blockly.Blocks.defaultToolbox;
+      }
       tree = Blockly.Xml.textToDom(tree);
     }
   } else {

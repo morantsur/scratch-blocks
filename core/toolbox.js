@@ -68,7 +68,7 @@ Blockly.Toolbox = function(workspace) {
    * @type {number}
    * @private
    */
-  this.editorType_ = 0;
+  this.editorType_ = 3;
   // True if categories will be shown (the only currentcase when it's false is in the show more/show less)
   this.showCategories_ = true;
   // True if only a subset of the blocks should be shown.
@@ -124,9 +124,7 @@ Blockly.Toolbox.prototype.init = function() {
   this.HtmlDiv =
       goog.dom.createDom(goog.dom.TagName.DIV, 'blocklyToolboxDiv');
   this.HtmlDiv.setAttribute('dir', workspace.RTL ? 'RTL' : 'LTR');
-  if (this.isMicroworld_) {
-    this.HtmlDiv.className += ' microworld';
-  }
+  this.updateHtmlClassName();
   svg.parentNode.insertBefore(this.HtmlDiv, svg);
 
   // Clicking on toolbox closes popups.
@@ -193,12 +191,21 @@ Blockly.Toolbox.prototype.updateEditorType_ = function(editorType) {
   if (editorType) {
     this.editorType_  = editorType;
     // True if categories will be shown (the only currentcase when it's false is in the show more/show less)
-    this.showCategories_ = (this.editorType_ == 2 ||
-                          this.editorType_ == 0);
+    this.showCategories_ = (this.editorType_ == 2 || this.editorType_ == 3);
    // True if only a subset of the blocks should be shown.
-    this.isMicroworld_ = (this.editorType_ > 0);
+    this.isMicroworld_ = (this.editorType_ == 1 || this.editorType_ == 2);
   }
 };
+
+Blockly.Toolbox.prototype.updateHtmlClassName = function(){
+  if (this.isMicroworld_) {
+    if (!this.HtmlDiv.className.includes('microworld')) {
+      this.HtmlDiv.className += ' microworld';
+    }
+  } else {
+    this.HtmlDiv.className = this.HtmlDiv.className.replace('microworld', '');
+  }
+}
 
 /**
  * Fill the toolbox with categories and blocks.
@@ -207,6 +214,7 @@ Blockly.Toolbox.prototype.updateEditorType_ = function(editorType) {
  */
 Blockly.Toolbox.prototype.populate_ = function(newTree, editorType) {
   this.updateEditorType_(editorType);
+  this.updateHtmlClassName();
   this.categoryMenu_.populate(newTree);
   this.setSelectedItem(this.categoryMenu_.categories_[0]);
 };
