@@ -69,14 +69,14 @@ Blockly.Toolbox = function(workspace) {
    * @private
    */
    //TODO(morant): allow the "defualt" box when it's 0.
-  this.showScaffoldingCategories_ = workspace.options.showScaffoldingCategories;
+  this.editorType_ = workspace.options.editorType;
 
   // True if categories will be shown (the only currentcase when it's false is in the show more/show less)
-  this.showCategories_ = (this.showScaffoldingCategories_ == 2 ||
-                          this.showScaffoldingCategories_ == 0);
+  this.showCategories_ = (this.editorType_ == 2 ||
+                          this.editorType_ == 0);
   
   // True if only a subset of the blocks should be shown.
-  this.isMicroworld_ = (this.showScaffoldingCategories_ > 0);
+  this.isMicroworld_ = (this.editorType_ > 0);
 
   /**
    * Is RTL vs LTR.

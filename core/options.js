@@ -54,7 +54,7 @@ Blockly.Options = function(options) {
     var languageTree = Blockly.Options.parseToolboxTree(options['toolbox']);
     var hasCategories = Boolean(languageTree &&
         languageTree.getElementsByTagName('category').length);
-    var showScaffoldingCategories = options['showScaffoldingCategories'];
+    var editorType = options['editorType'];
     var hasTrashcan = options['trashcan'];
     if (hasTrashcan === undefined) {
       hasTrashcan = hasCategories;
@@ -141,7 +141,7 @@ Blockly.Options = function(options) {
   this.readOnly = readOnly;
   this.pathToMedia = pathToMedia;
   this.hasCategories = hasCategories;
-  this.showScaffoldingCategories = showScaffoldingCategories;
+  this.editorType = editorType;
   this.hasScrollbars = hasScrollbars;
   this.hasTrashcan = hasTrashcan;
   this.hasSounds = hasSounds;
