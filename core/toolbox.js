@@ -68,15 +68,12 @@ Blockly.Toolbox = function(workspace) {
    * @type {number}
    * @private
    */
-   //TODO(morant): allow the "defualt" box when it's 0.
-  this.editorType_ = workspace.options.editorType;
-
+  this.editorType_ = 0;
   // True if categories will be shown (the only currentcase when it's false is in the show more/show less)
-  this.showCategories_ = (this.editorType_ == 2 ||
-                          this.editorType_ == 0);
-  
+  this.showCategories_ = true;
   // True if only a subset of the blocks should be shown.
-  this.isMicroworld_ = (this.editorType_ > 0);
+  this.isMicroworld_ = false;
+  this.updateEditorType_(workspace.options.editorType);
 
   /**
    * Is RTL vs LTR.
@@ -192,12 +189,24 @@ Blockly.Toolbox.prototype.createFlyout_ = function() {
   this.flyout_.init(workspace);
 };
 
+Blockly.Toolbox.prototype.updateEditorType_ = function(editorType) {
+  if (editorType) {
+    this.editorType_  = editorType;
+    // True if categories will be shown (the only currentcase when it's false is in the show more/show less)
+    this.showCategories_ = (this.editorType_ == 2 ||
+                          this.editorType_ == 0);
+   // True if only a subset of the blocks should be shown.
+    this.isMicroworld_ = (this.editorType_ > 0);
+  }
+};
+
 /**
  * Fill the toolbox with categories and blocks.
  * @param {!Node} newTree DOM tree of blocks.
  * @private
  */
-Blockly.Toolbox.prototype.populate_ = function(newTree) {
+Blockly.Toolbox.prototype.populate_ = function(newTree, editorType) {
+  this.updateEditorType_(editorType);
   this.categoryMenu_.populate(newTree);
   this.setSelectedItem(this.categoryMenu_.categories_[0]);
 };
@@ -393,13 +402,6 @@ Blockly.Toolbox.CategoryMenu.prototype.getHeight = function() {
  * Create the DOM for the category menu.
  */
 Blockly.Toolbox.CategoryMenu.prototype.createDom = function() {
-  // Only show in the case of the microworld with categories.
-  if (this.showCategories_ && this.isMicroworld_) {
-    this.div = goog.dom.createDom('div', 'scratchCetegoryMenuTitle');
-    this.div.innerHTML = "I want my sprite to..."; //TODO(morant): Title should come from configs.
-    this.parentHtml_.appendChild(this.div);
-    this.height_ = this.div.offsetHeight;
-  }
   /*
   <table class="scratchCategoryMenu">
   </table>
@@ -430,6 +432,11 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
     categories.push(child);
   }
 
+  // Re-init some attributes when updating the toolbox
+  this.categories_ = [];
+  this.currentCategory_ = 0;
+  this.parent_.firstCategoryIsSet_ = false;
+
   // TODO(morant): This is a change from the submitted code, which places categories
   // in a two vertical columns. This builds rows instead.
   for (var i = 0; i < categories.length; i += 2) {
@@ -448,7 +455,7 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
       }
     }
   }
-  this.height_ = this.height_ + this.table.offsetHeight;
+  this.height_ = this.table.offsetHeight;
 };
 
 /**

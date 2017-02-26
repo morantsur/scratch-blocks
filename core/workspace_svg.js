@@ -1421,7 +1421,11 @@ Blockly.WorkspaceSvg.prototype.playAudio = function(name, opt_volume) {
  * Modify the block tree on the existing toolbox.
  * @param {Node|string} tree DOM tree of blocks, or text representation of same.
  */
-Blockly.WorkspaceSvg.prototype.updateToolbox = function(tree) {
+Blockly.WorkspaceSvg.prototype.updateToolbox = function(tree, editorType) {
+  if (editorType) {
+    this.options.editorType = editorType;
+  }
+
   tree = Blockly.Options.parseToolboxTree(tree);
   if (!tree) {
     if (this.options.languageTree) {
@@ -1437,7 +1441,7 @@ Blockly.WorkspaceSvg.prototype.updateToolbox = function(tree) {
       throw 'Existing toolbox has no categories.  Can\'t change mode.';
     }
     this.options.languageTree = tree;
-    this.toolbox_.populate_(tree);
+    this.toolbox_.populate_(tree, this.options.editorType);
   } else {
     if (!this.flyout_) {
       throw 'Existing toolbox has categories.  Can\'t change mode.';
