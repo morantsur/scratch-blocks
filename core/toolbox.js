@@ -374,6 +374,7 @@ Blockly.Toolbox.prototype.setSelectedItemFactory = function(item) {
       var nextCategory = this.categoryMenu_.moveBetweenCategories(advanceCategoriesWhenClicked);
       if (nextCategory) {
         this.setSelectedItem(nextCategory);
+        this.categoryMenu_.updateClickableCategories();
       } else {
         console.log("No more categories to show");
       }
@@ -463,6 +464,8 @@ Blockly.Toolbox.CategoryMenu.prototype.populate = function(domTree) {
       }
     }
   }
+
+  this.updateClickableCategories();
   this.height_ = this.table.offsetHeight;
 };
 
@@ -476,6 +479,26 @@ Blockly.Toolbox.CategoryMenu.prototype.dispose = function() {
   if (this.table) {
     goog.dom.removeNode(this.table);
     this.table = null;
+  }
+};
+
+Blockly.Toolbox.CategoryMenu.prototype.updateClickableCategories = function() {
+  var showMoreItem = this.categories_[0].item_;
+  var showLessItem = this.categories_[1].item_;
+
+  var hasNext = (this.currentCategory_ + 1 < this.categories_.length);
+  var hasPrevious = (this.currentCategory_ - 1 >= 0);
+
+  if (hasNext) {
+    showMoreItem.className = showMoreItem.className.replace(' notclickable/g', '');
+  } else {
+    showMoreItem.className += ' notclickable';
+  }
+
+  if (hasPrevious) {
+    showLessItem.className = showLessItem.className.replace(' notclickable/g', '');
+  } else {
+    showLessItem.className += ' notclickable';
   }
 };
 
@@ -553,8 +576,10 @@ Blockly.Toolbox.Category.prototype.createDom = function() {
       {'class': 'scratchCategoryMenuItem'},
       this.name_);
   if (this.parent_.parent_.isMicroworld_) {
-    this.item_.style.backgroundColor = this.colour_;
-    this.item_.style.borderColor = this.secondaryColour_;
+    if (this.parent_.parent_.showCategories_) {
+      this.item_.style.backgroundColor = this.colour_;
+      this.item_.style.borderColor = this.secondaryColour_;
+    }
   } else {
     this.bubble_ = goog.dom.createDom('div', {
       'class': (toolbox.RTL) ? 'scratchCategoryItemBubbleRTL' :

@@ -1072,7 +1072,16 @@ Blockly.Css.CONTENT = [
     'height: 60px;',
     'text-align: center;',
     'border-radius: 16px;',
-    'background-color: rgb(76, 151, 255);',
+    'background-color: #778899;',
+  '}',
+
+  '.microworld .scratchCategoryMenuItem:hover {',
+    'opacity: 0.8',
+  '}',
+
+  '.microworld .scratchCategoryMenuItem.notclickable {',
+    'background-color: #D3D3D3;',
+    'opacity: 0.8',
   '}',
 
   '.scratchCategoryMenuItem.categorySelected {',
