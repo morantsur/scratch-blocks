@@ -24,17 +24,17 @@
  */
 'use strict';
 
+/**
+ * @name Blockly.Variables
+ * @namespace
+ **/
 goog.provide('Blockly.Variables');
 
 goog.require('Blockly.Blocks');
+goog.require('Blockly.constants');
 goog.require('Blockly.Workspace');
 goog.require('goog.string');
 
-
-/**
- * Category to separate variable names from procedures and generated functions.
- */
-Blockly.Variables.NAME_TYPE = 'VARIABLE';
 
 /**
  * Find all user-created variables that are in use in the workspace.
@@ -54,6 +54,9 @@ Blockly.Variables.allUsedVariables = function(root) {
   } else {
     throw 'Not Block or Workspace: ' + root;
   }
+
+  var ignorableName = Blockly.Variables.noVariableText();
+
   var variableHash = Object.create(null);
   // Iterate through every block and add each variable to the hash.
   for (var x = 0; x < blocks.length; x++) {
@@ -62,7 +65,7 @@ Blockly.Variables.allUsedVariables = function(root) {
       for (var y = 0; y < blockVariables.length; y++) {
         var varName = blockVariables[y];
         // Variable name may be null if the block is only half-built.
-        if (varName) {
+        if (varName && !varName.toLowerCase() == ignorableName) {
           variableHash[varName.toLowerCase()] = varName;
         }
       }
@@ -116,14 +119,16 @@ Blockly.Variables.flyoutCategory = function(workspace) {
   for (var i = 0; i < variableList.length; i++) {
     if (Blockly.Blocks['data_variable']) {
       // <block type="data_variable">
-      //   <value name="VARIABLE">
-      //     <shadow type="data_variablemenu"></shadow>
-      //   </value>
+      //    <field name="VARIABLE">variablename</field>
       // </block>
       var block = goog.dom.createDom('block');
       block.setAttribute('type', 'data_variable');
       block.setAttribute('gap', 8);
-      block.appendChild(Blockly.Variables.createVariableDom_(variableList[i]));
+
+      var field = goog.dom.createDom('field', null, variableList[i]);
+      field.setAttribute('name', 'VARIABLE');
+      block.appendChild(field);
+
       xmlList.push(block);
     }
   }
@@ -277,6 +282,16 @@ Blockly.Variables.createMathNumberDom_ = function() {
 };
 
 /**
+ * Return the text that should be used in a field_variable or
+ * field_variable_getter when no variable exists.
+ * TODO: #572
+ * @return {string} The text to display.
+ */
+Blockly.Variables.noVariableText = function() {
+  return "No variable selected";
+};
+
+/**
 * Return a new variable name that is not yet being used. This will try to
 * generate single letter variable names in the range 'i' to 'z' to start with.
 * If no unique name is located it will try 'i' to 'z', 'a' to 'h',
@@ -329,9 +344,9 @@ Blockly.Variables.generateUniqueName = function(workspace) {
  * Create a new variable on the given workspace.
  * @param {!Blockly.Workspace} workspace The workspace on which to create the
  *     variable.
- * @param {function(?string)=} opt_callback A callback. It
- *     will be passed a new variable name, or null if the change is to be
- *     aborted (cancel button).
+ * @param {function(?string=)=} opt_callback A callback. It will
+ *     be passed an acceptable new variable name, or null if change is to be
+ *     aborted (cancel button), or undefined if an existing variable was chosen.
  */
 Blockly.Variables.createVariable = function(workspace, opt_callback) {
   var promptAndCheckWithAlert = function(defaultName) {

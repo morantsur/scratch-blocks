@@ -278,6 +278,9 @@ Blockly.Workspace.prototype.renameVariable = function(oldName, newName) {
  * @param {string} name The new variable's name.
  */
 Blockly.Workspace.prototype.createVariable = function(name) {
+  if (name.toLowerCase() == Blockly.Variables.noVariableText()) {
+    return;
+  }
   var index = this.variableIndexOf(name);
   if (index == -1) {
     this.variableList.push(name);
@@ -482,6 +485,32 @@ Blockly.Workspace.prototype.getBlockById = function(id) {
     block = this.getFlyout().getWorkspace().blockDB_[id];
   }
   return block || null;
+};
+
+/**
+ * Checks whether all value and statement inputs in the workspace are filled
+ * with blocks.
+ * @param {boolean=} opt_shadowBlocksAreFilled An optional argument controlling
+ *     whether shadow blocks are counted as filled. Defaults to true.
+ * @return {boolean} True if all inputs are filled, false otherwise.
+ */
+Blockly.Workspace.prototype.allInputsFilled = function(opt_shadowBlocksAreFilled) {
+  var blocks = this.getTopBlocks(false);
+  for (var i = 0, block; block = blocks[i]; i++) {
+    if (!block.allInputsFilled(opt_shadowBlocksAreFilled)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
+ * Getter for the flyout associated with this workspace.  This is null in a
+ * non-rendered workspace, but may be overriden by subclasses.
+ * @return {Blockly.Flyout} The flyout on this workspace.
+ */
+Blockly.Workspace.prototype.getFlyout = function() {
+  return null;
 };
 
 /**
