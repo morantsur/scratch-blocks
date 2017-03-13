@@ -364,10 +364,10 @@ Blockly.Toolbox.prototype.setSelectedItemFactory = function(item) {
       Blockly.Touch.clearTouchIdentifier();
     };
   } else {
-    // The first category acts as a "show more blocks" button, while the others act as a "show less".
+    // The first category acts as a "show fewer blocks" button, while the others act as a "show more".
     // at first this.firstCateforyIsSet is undefined, but after setting one category is is set to true,
     // so moveVetweenCategories gets a "false" as the param for moving forward.
-    var advanceCategoriesWhenClicked = (!this.firstCategoryIsSet_);
+    var advanceCategoriesWhenClicked = (this.firstCategoryIsSet_);
     this.firstCategoryIsSet_ = true;
 
     return function() {
@@ -483,20 +483,20 @@ Blockly.Toolbox.CategoryMenu.prototype.dispose = function() {
 };
 
 Blockly.Toolbox.CategoryMenu.prototype.updateClickableCategories = function() {
-  var showMoreItem = this.categories_[0].item_;
-  var showLessItem = this.categories_[1].item_;
+  var showLessItem = this.categories_[0].item_;
+  var showMoreItem = this.categories_[1].item_;
 
   var hasNext = (this.currentCategory_ + 1 < this.categories_.length);
   var hasPrevious = (this.currentCategory_ - 1 >= 0);
 
   if (hasNext) {
-    showMoreItem.className = showMoreItem.className.replace(' notclickable/g', '');
+    showMoreItem.className = showMoreItem.className.replace(/ notclickable/g, '');
   } else {
     showMoreItem.className += ' notclickable';
   }
 
   if (hasPrevious) {
-    showLessItem.className = showLessItem.className.replace(' notclickable/g', '');
+    showLessItem.className = showLessItem.className.replace(/ notclickable/g, '');
   } else {
     showLessItem.className += ' notclickable';
   }
@@ -599,9 +599,9 @@ Blockly.Toolbox.Category.prototype.createDom = function() {
  */
 Blockly.Toolbox.Category.prototype.setSelected = function(selected) {
   if (selected) {
-    this.item_.className = 'scratchCategoryMenuItem categorySelected';
+    this.item_.className += ' categorySelected';
   } else {
-    this.item_.className = 'scratchCategoryMenuItem';
+    this.item_.className = this.item_.className.replace(/ categorySelected/g, '');
   }
 };
 
