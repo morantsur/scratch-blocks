@@ -1459,9 +1459,7 @@ Blockly.WorkspaceSvg.prototype.playAudio = function(name, opt_volume) {
  * @param {Node|string} tree DOM tree of blocks, or text representation of same.
  */
 Blockly.WorkspaceSvg.prototype.updateToolbox = function(tree, editorType) {
-  if (editorType) {
-    this.options.editorType = editorType;
-  }
+  this.options.editorType = editorType;
 
   tree = Blockly.Options.parseToolboxTree(tree);
   if (!tree) {

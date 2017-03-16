@@ -143,7 +143,7 @@ Blockly.Toolbox.prototype.init = function() {
 
   this.createFlyout_();
   this.categoryMenu_ = new Blockly.Toolbox.CategoryMenu(this, this.HtmlDiv);
-  this.populate_(workspace.options.languageTree);
+  this.populate_(workspace.options.languageTree, this.editorType_);
   this.position();
 };
 
@@ -190,11 +190,13 @@ Blockly.Toolbox.prototype.createFlyout_ = function() {
 Blockly.Toolbox.prototype.updateEditorType_ = function(editorType) {
   if (editorType) {
     this.editorType_  = editorType;
-    // True if categories will be shown (the only currentcase when it's false is in the show more/show less)
-    this.showCategories_ = (this.editorType_ == 2 || this.editorType_ == 3);
-   // True if only a subset of the blocks should be shown.
-    this.isMicroworld_ = (this.editorType_ == 1 || this.editorType_ == 2);
+  } else {
+    this.editorType_ = 3; // Default type.
   }
+  // True if categories will be shown (the only currentcase when it's false is in the show more/show less)
+  this.showCategories_ = (this.editorType_ == 2 || this.editorType_ == 3);
+ // True if only a subset of the blocks should be shown.
+  this.isMicroworld_ = (this.editorType_ == 1 || this.editorType_ == 2);
 };
 
 Blockly.Toolbox.prototype.updateHtmlClassName = function(){
