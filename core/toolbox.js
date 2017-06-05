@@ -130,7 +130,6 @@ Blockly.Toolbox.prototype.init = function() {
   // Clicking on toolbox closes popups.
   Blockly.bindEventWithChecks_(this.HtmlDiv, 'mousedown', this,
       function(e) {
-        Blockly.DropDownDiv.hide();
         if (Blockly.utils.isRightButton(e) || e.target == this.HtmlDiv) {
           // Close flyout.
           Blockly.hideChaff(false);
@@ -278,7 +277,25 @@ Blockly.Toolbox.prototype.clearSelection = function() {
 };
 
 /**
- * Return the deletion rectangle for this toolbar in viewport coordinates.\
+ * Adds styles on the toolbox indicating blocks will be deleted.
+ * @package
+ */
+Blockly.Toolbox.prototype.addDeleteStyle = function() {
+  Blockly.utils.addClass(/** @type {!Element} */ (this.HtmlDiv),
+                         'blocklyToolboxDelete');
+};
+
+/**
+ * Remove styles from the toolbox that indicate blocks will be deleted.
+ * @package
+ */
+Blockly.Toolbox.prototype.removeDeleteStyle = function() {
+  Blockly.utils.removeClass(/** @type {!Element} */ (this.HtmlDiv),
+                            'blocklyToolboxDelete');
+};
+
+/**
+ * Return the deletion rectangle for this toolbox.
  * @return {goog.math.Rect} Rectangle in which to delete.
  */
 Blockly.Toolbox.prototype.getClientRect = function() {
@@ -478,6 +495,7 @@ Blockly.Toolbox.CategoryMenu.prototype.dispose = function() {
   for (var i = 0, category; category = this.categories_[i]; i++) {
     category.dispose();
   }
+  this.categories_ = [];
   if (this.table) {
     goog.dom.removeNode(this.table);
     this.table = null;
@@ -623,6 +641,7 @@ Blockly.Toolbox.Category.prototype.parseContents_ = function(domTree) {
       case 'SHADOW':
       case 'LABEL':
       case 'BUTTON':
+      case 'SEP':
       case 'TEXT':
         this.contents_.push(child);
         break;

@@ -95,7 +95,6 @@ Blockly.FieldAngle.OFFSET = 90;
  */
 Blockly.FieldAngle.WRAP = 180;
 
-
 /**
  * Radius of protractor circle.  Slightly smaller than protractor size since
  * otherwise SVG crops off half the border at the edges.
@@ -115,11 +114,8 @@ Blockly.FieldAngle.prototype.dispose_ = function() {
     if (thisField.clickWrapper_) {
       Blockly.unbindEvent_(thisField.clickWrapper_);
     }
-    if (thisField.moveWrapper1_) {
-      Blockly.unbindEvent_(thisField.moveWrapper1_);
-    }
-    if (thisField.moveWrapper2_) {
-      Blockly.unbindEvent_(thisField.moveWrapper2_);
+    if (thisField.moveWrapper_) {
+      Blockly.unbindEvent_(thisField.moveWrapper_);
     }
   };
 };
@@ -146,17 +142,18 @@ Blockly.FieldAngle.prototype.showEditor_ = function() {
     'height': (Blockly.FieldAngle.HALF * 2) + 'px',
     'width': (Blockly.FieldAngle.HALF * 2) + 'px'
   }, div);
-  var circle = Blockly.utils.createSvgElement('circle', {
+  Blockly.utils.createSvgElement('circle', {
     'cx': Blockly.FieldAngle.HALF, 'cy': Blockly.FieldAngle.HALF,
     'r': Blockly.FieldAngle.RADIUS,
     'class': 'blocklyAngleCircle'
   }, svg);
   this.gauge_ = Blockly.utils.createSvgElement('path',
       {'class': 'blocklyAngleGauge'}, svg);
-  this.line_ = Blockly.utils.createSvgElement('line',
-      {'x1': Blockly.FieldAngle.HALF,
-      'y1': Blockly.FieldAngle.HALF,
-      'class': 'blocklyAngleLine'}, svg);
+  this.line_ = Blockly.utils.createSvgElement('line',{
+    'x1': Blockly.FieldAngle.HALF,
+    'y1': Blockly.FieldAngle.HALF,
+    'class': 'blocklyAngleLine'
+  }, svg);
   // Draw markers around the edge.
   for (var angle = 0; angle < 360; angle += 15) {
     Blockly.utils.createSvgElement('line', {
@@ -184,12 +181,10 @@ Blockly.FieldAngle.prototype.showEditor_ = function() {
       Blockly.bindEvent_(svg, 'click', this, function() {
         Blockly.WidgetDiv.hide();
         Blockly.DropDownDiv.hide();
+        Blockly.unbindEvent_(this.moveWrapper_);
       });
-  this.moveWrapper1_ =
-      Blockly.bindEvent_(circle, 'mousemove', this, this.onMouseMove);
-  this.moveWrapper2_ =
-      Blockly.bindEvent_(this.gauge_, 'mousemove', this,
-      this.onMouseMove);
+  this.moveWrapper_ =
+      Blockly.bindEvent_(svg, 'mousemove', this, this.onMouseMove);
   this.updateGraph_();
 };
 
@@ -240,12 +235,6 @@ Blockly.FieldAngle.prototype.setText = function(text) {
     return;
   }
   this.updateGraph_();
-  // Insert degree symbol.
-  if (this.sourceBlock_.RTL) {
-    this.textElement_.insertBefore(this.symbol_, this.textElement_.firstChild);
-  } else {
-    this.textElement_.appendChild(this.symbol_);
-  }
   // Cached width is obsolete.  Clear it.
   this.size_.width = 0;
 };
