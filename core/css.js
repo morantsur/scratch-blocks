@@ -1107,7 +1107,7 @@ Blockly.Css.CONTENT = [
     'color: $colour_valueReportBackground;',
     'background: transparent;',
     'font-weight: bold;',
-    'padding-bottom: 10px;',
+    'padding: 10px 0;',
   '}',
 
   '.scratchCategoryRow {',
